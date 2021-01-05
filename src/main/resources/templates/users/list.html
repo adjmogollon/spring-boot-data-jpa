@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<body>
+
+    <div id="i18n_delete_user" th:text="#{text.user.deleteOk}" style="display: none;"></div>
+
+	<header th:replace="layout/layout :: header"></header>
+
+	<div class="container py-4">
+
+		<div class="card bg-light">
+			<div class="card-header" th:text="${title}"></div>
+			<div class="card-body">
+
+				<h4 class="card-title">
+					<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/form}" class="btn btn-primary btn-xs" th:text="#{text.user.create}">Create User</a>
+						
+					<a class="btn btn-success btn-xs float-right my-2 mx-1" th:href="@{'/listar'(format=csv)}">CSV</a>
+					<a class="btn btn-danger btn-xs float-right my-2 mx-1" th:href="@{'/listar'(format=xml)}">XML</a>
+					<a class="btn btn-warning btn-xs float-right my-2 mx-1" th:href="@{'/listar'(format=json)}">JSON</a>
+						
+				</h4>
+				
+				<table class="table table-striped table-bordered">
+					<thead class="thead-inverse">
+						<tr>
+							<th sec:authorize="hasRole('ROLE_USER')">id</th>
+							<th th:text="#{text.user.username}">username</th>
+							<th th:text="#{text.user.enable}">enable</th>
+							<th th:text="#{text.user.assingAuthorities}" sec:authorize="hasRole('ROLE_ADMIN')">Assing Authorities</th>
+							<th th:text="#{text.user.edit}" sec:authorize="hasRole('ROLE_ADMIN')">Edit</th>
+							<th th:text="#{text.user.delete}" sec:authorize="hasRole('ROLE_ADMIN')">Delete</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user: ${users}">
+							<td><a class="btn btn-primary btn-xs" 
+							th:href="@{/read/} + ${user.id}" th:text="${user.id}"></a></td>
+							<td th:text="${user.username}"></td>
+							<td th:text="${user.enabled}"></td>
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-success btn-xs"
+								th:href="@{'/role/form/' + ${user.id}}"
+								th:text="#{text.user.assingAuthorities}"></a></td>
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-primary btn-xs"
+								th:href="@{/user/form/} + ${user.id}" th:text="#{text.user.edit}"></a></td>
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-danger btn-xs"
+								th:href="@{user/delete/} + ${user.id}" th:text="#{text.user.delete}"
+								onclick="return confirm(document.getElementById('i18n_delete_user').innerHTML);"></a></td>
+						</tr>
+					</tbody>
+
+				</table>
+				
+			</div>
+		</div>
+
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
